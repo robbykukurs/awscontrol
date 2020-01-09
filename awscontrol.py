@@ -7,13 +7,13 @@ import click
 #below is module for dealing with directories and paths in Python
 from os.path import expanduser
 
-#Setting up aws user access
+#Function for setting up aws user access
 def setup_aws_access():
     ACCESS_KEY = input("Please provide your AWS ACCESS_KEY here: ")
     SECRET_KEY = input("Please provide your AWS SECRET_KEY here: ")
     profile_name = input("Please provide your AWS profile name here: ")
 
-    #showing Python the correct path to the aws configuration aws configuration file
+    #showing Python the correct path to the user's home direcotory
     path = expanduser("~")
 
     #opening file for editing or creating a new one if it doesn't exist
@@ -27,8 +27,34 @@ def setup_aws_access():
     #close the file when done
     aws_config_file.close()
 
-if __name__ == '__main__':
-    setup_aws_access()
+#USER CONFIRMING THE AWS PROFILE
+#we're going to ask user which aws profile name they want to use in order to establish session to aws
+#I want to offer the user all available profile names which I think would be cool
+
+#showing Python the correct path to the user's home direcotory
+path = expanduser("~")
+#now let us read the aws credentials file and save it to a variabe
+aws_credentials_file = open(path + "/.aws/credentials", "r")
+#now let us read the individual lines from the credentials file
+contents = aws_credentials_file.readlines()
+#profile name is listed in [] so let's filter those entries and add to a list
+profile_list = []
+for i in contents:
+    if "[" and "]" in i:
+        profile_list.append(i)
+#removing new line characters from end of each list item
+final_profile_list = []
+for i in profile_list:
+    final_profile_list.append(i.strip())
+#now we want to convert the profile name list entries to a nice string so we can
+#append it to a prompt string later on
+s = " "
+s = s.join(final_profile_list)
+prompt_line = str("You can choose from the following profiles: " + s)
+print(prompt_line)
+
+#available_aws_profile_names =
+#session_profile_name = input("Please provide your AWS profile name for establishing user session here: ")
 
 #aws session is going to be established by using environmental variables
 #session = boto3.Session(
