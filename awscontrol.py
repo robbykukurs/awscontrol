@@ -56,10 +56,27 @@ def aws_profile_prompt():
     prompt_line = str("You can choose from the following profiles to establish a session to AWS: " + s)
     print(prompt_line)
 
+####### THIS IS WHERE THE SCRIPT ACTUALLY STARTS RUNNING #######
+
+#here we're naming the main @click group - click is a module helping us
+#with creation of CLI options and commands - it's imported on very top
+@click.group()
+def aws_control():
+    """Robby Kukurs' Python CLI tool to manage AWS resources. Please use "user connect" command to establish session first"""
+
+#here we're naming the "user" command
+@aws_control.group('user')
+def user():
+    """Commands for connecting to AWS and establishing a user session. Use the "connect" option to start session"""
+
+@user.command('connect')
 #FUNCTION FOR ESTABLISHING USER SESSION TO aws - it will only stop when a valid aws profile is selected and session is established
 # check if the aws credentials file exists, if not -  run setup_aws_access first
 # then run while loop for aws credentials file and establish session based on input
 # if incorrect profile name provided - keep within the loop till valid name provided
+
+#below function can be called whatever you want, it will automatically go with
+#above @click user.command - so sequence is very important here
 def establish_session_to_aws():
     #let's point towards the user's home direcotory
     path = expanduser("~")
@@ -84,15 +101,5 @@ def establish_session_to_aws():
         #if session established successfully, exit the while loop
         break
 
-
-#def cli():
-#    """Robby Kukur's CLI tool to connect to and manage AWS cloud"""
-#
-#@cli.group('setup')
-#def setup():
-#    """Setting up AWS environment"""
-#
-#@setup.command('accountid')
-#
-#if __name__ == '__main__':
-#    cli()
+if __name__ == '__main__':
+    aws_control()
